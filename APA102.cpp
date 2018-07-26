@@ -3,7 +3,7 @@
 #define APA102_FIRST_LED_OFFSET 4
 #define APA102_FRAME_PREAMBLE 224 // 11100000
 
-APA102::APA102(uint8_t mosiPin, uint8_t clockPin, uint8_t ledsCount) {
+APA102::APA102(gpio_num_t mosiPin, gpio_num_t clockPin, size_t ledsCount) {
     count = ledsCount;
 
     bufferSize = 
@@ -80,5 +80,5 @@ void APA102::setPixel(uint8_t index, PixelInfo pixel) {
 
 void APA102::flush() {
     init();
-    spi_device_queue_trans(deviceHandle, transaction, portMAX_DELAY);
+    spi_device_queue_trans(deviceHandle, &transaction, portMAX_DELAY);
 }
