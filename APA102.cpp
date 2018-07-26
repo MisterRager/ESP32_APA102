@@ -32,41 +32,34 @@ APA102::APA102(gpio_num_t mosiPin, gpio_num_t clockPin, size_t ledsCount) {
     deviceConfig.pre_cb = NULL;
 
     transaction.length = bufferSize;
-}
 
-void APA102::init() {
     esp_err_t ret;
-    if (!hasInit) {
-        ret = spi_bus_initialize(HSPI_HOST, &busConfig, 1);
-        ESP_ERROR_CHECK(ret);
 
-        ret = spi_bus_add_device(HSPI_HOST, &deviceConfig, &deviceHandle);
-        ESP_ERROR_CHECK(ret);
+    ret = spi_bus_initialize(HSPI_HOST, &busConfig, 1);
+    ESP_ERROR_CHECK(ret);
 
-        outputBuffer = (uint8_t *) heap_caps_malloc(sizeof(uint8_t) * bufferSize, MALLOC_CAP_DMA);
+    ret = spi_bus_add_device(HSPI_HOST, &deviceConfig, &deviceHandle);
+    ESP_ERROR_CHECK(ret);
 
-        // Preamble: 4 bytes of 0
-        outputBuffer[0] = 0;
-        outputBuffer[1] = 0;
-        outputBuffer[2] = 0;
-        outputBuffer[3] = 0;
+    outputBuffer = (uint8_t *) heap_caps_malloc(sizeof(uint8_t) * bufferSize, MALLOC_CAP_DMA);
 
-        // Postamble: at least n/2 bits of 1
-        for (int k = APA102_FIRST_LED_OFFSET + 4 * count; k < bufferSize; k++) {
-            outputBuffer[k] = 255; // 11111111
-        }
+    // Preamble: 4 bytes of 0
+    outputBuffer[0] = 0;
+    outputBuffer[1] = 0;
+    outputBuffer[2] = 0;
+    outputBuffer[3] = 0;
 
-        transaction.tx_buffer = outputBuffer;
-
-        hasInit = true;
+    // Postamble: at least n/2 bits of 1
+    for (int k = APA102_FIRST_LED_OFFSET + 4 * count; k < bufferSize; k++) {
+        outputBuffer[k] = 255; // 11111111
     }
+
+    transaction.tx_buffer = outputBuffer;
 }
 
 APA102::~APA102() {
-    if (hasInit) {
-        spi_bus_remove_device(deviceHandle);
-        heap_caps_free(outputBuffer);
-    }
+    spi_bus_remove_device(deviceHandle);
+    heap_caps_free(outputBuffer);
 }
 
 void APA102::setPixel(uint8_t index, PixelInfo pixel) {
@@ -79,6 +72,5 @@ void APA102::setPixel(uint8_t index, PixelInfo pixel) {
 }
 
 void APA102::flush() {
-    init();
-    spi_device_queue_trans(deviceHandle, &transaction, portMAX_DELAY);
+    ESP_ERROR_CHECK(spi_device_transmit(deviceHandle, &transaction));
 }

@@ -1,4 +1,6 @@
 #include "spi_master.h"
+#include "esp_err.h"
+#include "esp_heap_caps.h"
 
 typedef struct PixelInfo {
     uint8_t brightness;
@@ -24,6 +26,4 @@ class APA102 {
         bool hasInit = 0;
         uint8_t bufferSize;
         uint8_t * outputBuffer;
-
-        void init();
 };
