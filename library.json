@@ -1,0 +1,19 @@
+{
+	"name": "ESP32_APA102",
+	"keywords": "esp32 apa102 espressif esp-idf",
+	"description" : "ESP-IDF class for controlling groups of APA102 Lights",
+	"repository" : {
+		"type": "git",
+		"url": "https://github.com/MisterRager/ESP32_APA102.git"
+	},
+	"authors": [
+		{
+			"name": "Alan Rager",
+			"email": "alan.rager@gmail.com",
+			"maintainer": true
+		}
+	],
+	"platforms": "espressif32",
+	"frameworks": "espidf",
+	"version": "0.0.1"
+}
