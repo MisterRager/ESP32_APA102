@@ -11,7 +11,7 @@ typedef struct PixelInfo {
 
 class APA102 {
     public:
-        APA102(gpio_num_t mosiPin, gpio_num_t clockPin, size_t ledsCount);
+        APA102(gpio_num_t mosiPin, gpio_num_t clockPin, size_t ledsCount, spi_host_device_t spiDevice = VSPI_HOST);
         ~APA102();
         void flush();
         void setPixel(uint8_t index, PixelInfo pixel);

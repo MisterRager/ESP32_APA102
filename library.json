@@ -15,5 +15,5 @@
 	],
 	"platforms": "espressif32",
 	"frameworks": "espidf",
-	"version": "0.1.0"
+	"version": "0.2.0"
 }

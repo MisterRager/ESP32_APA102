@@ -3,7 +3,7 @@
 #define APA102_FIRST_LED_OFFSET 4
 #define APA102_FRAME_PREAMBLE 224 // 11100000
 
-APA102::APA102(gpio_num_t mosiPin, gpio_num_t clockPin, size_t ledsCount) {
+APA102::APA102(gpio_num_t mosiPin, gpio_num_t clockPin, size_t ledsCount, spi_host_device_t spiDevice) {
     count = ledsCount;
 
     bufferSize = 
@@ -35,10 +35,10 @@ APA102::APA102(gpio_num_t mosiPin, gpio_num_t clockPin, size_t ledsCount) {
 
     esp_err_t ret;
 
-    ret = spi_bus_initialize(HSPI_HOST, &busConfig, 1);
+    ret = spi_bus_initialize(spiDevice, &busConfig, 1);
     ESP_ERROR_CHECK(ret);
 
-    ret = spi_bus_add_device(HSPI_HOST, &deviceConfig, &deviceHandle);
+    ret = spi_bus_add_device(spiDevice, &deviceConfig, &deviceHandle);
     ESP_ERROR_CHECK(ret);
 
     outputBuffer = (uint8_t *) heap_caps_malloc(sizeof(uint8_t) * bufferSize, MALLOC_CAP_DMA);
@@ -50,7 +50,7 @@ APA102::APA102(gpio_num_t mosiPin, gpio_num_t clockPin, size_t ledsCount) {
     outputBuffer[3] = 0;
 
     // Postamble: at least n/2 bits of 1
-    for (int k = APA102_FIRST_LED_OFFSET + 4 * count; k < bufferSize; k++) {
+    for (auto k = APA102_FIRST_LED_OFFSET + 4 * count; k < bufferSize; k++) {
         outputBuffer[k] = 255; // 11111111
     }
 
@@ -63,7 +63,7 @@ APA102::~APA102() {
 }
 
 void APA102::setPixel(uint8_t index, PixelInfo pixel) {
-    int bytesOffset = APA102_FIRST_LED_OFFSET + index * 4;
+    auto bytesOffset = APA102_FIRST_LED_OFFSET + index * 4;
     
     outputBuffer[bytesOffset] = APA102_FRAME_PREAMBLE | pixel.brightness;
     outputBuffer[bytesOffset + 1] = pixel.blue;
@@ -72,5 +72,6 @@ void APA102::setPixel(uint8_t index, PixelInfo pixel) {
 }
 
 void APA102::flush() {
-    ESP_ERROR_CHECK(spi_device_transmit(deviceHandle, &transaction));
+    auto ret = spi_device_transmit(deviceHandle, &transaction);
+    ESP_ERROR_CHECK(ret);
 }
