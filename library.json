@@ -1,6 +1,14 @@
 {
 	"name": "ESP32_APA102",
-	"keywords": "esp32 apa102 espressif esp-idf spi dotstar",
+	"keywords": [
+		"esp32",
+		"apa102",
+		"espressif",
+		"esp-idf",
+		"spi",
+		"dotstar",
+		"rgb"
+	],
 	"description" : "ESP-IDF class for controlling groups of APA102 Lights",
 	"repository" : {
 		"type": "git",
@@ -15,8 +23,5 @@
 	],
 	"platforms": "espressif32",
 	"frameworks": "espidf",
-	"version": "1.0.0",
-	"build" : {
-		"srcDir" : "src"
-	}
+	"version": "1.0.1"
 }
