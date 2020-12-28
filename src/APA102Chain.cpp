@@ -11,27 +11,27 @@ namespace apa102 {
 
 APA102Chain::APA102Chain(
     const std::shared_ptr<SpiDevice> device,
-    size_t length
+    const size_t length
 ) :
     spi(device),
     padding(_APA102_PADDING(length)),
-    pixelCount(length)
+    pixelCount(length),
+    byteCount(APA102_PREAMBLE_BYTES + length * 4 + padding)
 {
-    size_t bufferBytes = APA102_PREAMBLE_BYTES + length * 4 + padding;
     buffer = static_cast<uint8_t *>(
-            heap_caps_malloc(sizeof(uint8_t) * bufferBytes, MALLOC_CAP_DMA));
+            heap_caps_malloc(sizeof(uint8_t) * byteCount, MALLOC_CAP_DMA));
     
     pixelBuffer = reinterpret_cast<APA102Pixel *>(&buffer[APA102_PREAMBLE_BYTES]);
-    std::memset(buffer, 0, bufferBytes);
+    std::memset(buffer, 0, byteCount);
     std::memset(&pixelBuffer[length * 4], 0xFF, padding);
 
-    ESP_LOGV(
+    ESP_LOGI(
         TAG,
         "APA102 Chain of %d length with preamble %d and %d padding totaling to %d bytes",
         pixelCount,
         APA102_PREAMBLE_BYTES,
         padding,
-        bufferBytes);
+        byteCount);
 }
 
 APA102Chain::~APA102Chain() {
@@ -39,7 +39,16 @@ APA102Chain::~APA102Chain() {
 }
 
 esp_err_t APA102Chain::flush() {
-    return spi->sendData(APA102_PREAMBLE_BYTES + pixelCount * 4 + padding, buffer);
+
+    ESP_LOGI(
+        TAG,
+        "APA102 Chain of %d length with preamble %d and %d padding totaling to %d bytes",
+        pixelCount,
+        APA102_PREAMBLE_BYTES,
+        padding,
+        byteCount);
+
+    return spi->sendData(byteCount, buffer);
 }
 
 APA102Chain *APA102Chain::build(
@@ -73,7 +82,6 @@ int APA102Chain::setPixel(
     {
         // Brightness is 5 bits of freedom with three bits of 1 right before
         uint8_t brightnessBit = 0b11100000u | _MIN(brightness, 0b11111u);
-        ESP_LOGI(TAG, "Brightness %u from %u", brightnessBit, brightness);
 
         pixelBuffer[index] = {
             .brightness = brightnessBit,
@@ -89,7 +97,12 @@ int APA102Chain::setPixel(
 
 APA102Pixel *APA102Chain::getPixel(size_t index)
 {
-    return &pixelBuffer[index];
+    if (index > 0 && index < pixelCount)
+    {
+        return &pixelBuffer[index];
+    }
+
+    return nullptr;
 }
 
 APA102Pixel *APA102Chain::operator[](size_t index)

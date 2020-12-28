@@ -9,15 +9,15 @@ namespace apa102 {
 class PanelBuilder
 {
 private:
+    PointIndexMap &addTo;
     const size_t subPanelSpan;
     const size_t subPanelHeight;
     const size_t subPanelPixels;
 
 public:
-    PanelBuilder(size_t span, size_t height);
+    PanelBuilder(PointIndexMap &addTo, size_t span, size_t height);
 
     void addSnakes(
-        PointIndexMap &addTo,
         const size_t firstIndex,
         const Point2D &deltas,
         const Point2D &offsets) const;

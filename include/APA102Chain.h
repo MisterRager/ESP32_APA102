@@ -21,6 +21,7 @@ private:
     std::shared_ptr<SpiDevice> spi;
     const uint8_t padding;
     const size_t pixelCount;
+    const size_t byteCount;
     
     uint8_t * buffer;
     APA102Pixel * pixelBuffer;

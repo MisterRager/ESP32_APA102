@@ -5,14 +5,15 @@ namespace apa102 {
 
 #define IS_EVEN(n) (n % 2 == 0)
 #define TAG "panel_builder"
+
 PanelBuilder::PanelBuilder(
-    size_t span,
-    size_t height) : subPanelSpan(span), subPanelHeight(height), subPanelPixels(span * height)
-{
+        PointIndexMap &addTo,
+        size_t span,
+        size_t height) : addTo(addTo), subPanelSpan(span), subPanelHeight(height), subPanelPixels(span * height)
+    {
 }
 
 void PanelBuilder::addSnakes(
-    PointIndexMap &addTo,
     const size_t firstIndex,
     const Point2D &deltas,
     const Point2D &offsets) const

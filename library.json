@@ -23,7 +23,7 @@
 	],
 	"platforms": "espressif32",
 	"frameworks": "espidf",
-	"version": "1.0.2",
+	"version": "1.1.0",
 	"examples": [
 		{
 			"name": "One-Dimension",

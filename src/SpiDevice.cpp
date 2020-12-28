@@ -46,7 +46,7 @@ esp_err_t SpiDevice::sendData(
     size_t length,
     const uint8_t *buffer)
 {
-    ESP_LOGV(TAG, "Sending %d bytes of on SPI", length);
+    ESP_LOGI(TAG, "Sending %u bytes of on SPI", length);
 
     spi_transaction_t *transaction = static_cast<spi_transaction_t *>(
         heap_caps_malloc(sizeof(spi_transaction_t), MALLOC_CAP_DMA));
