@@ -23,5 +23,12 @@
 	],
 	"platforms": "espressif32",
 	"frameworks": "espidf",
-	"version": "1.0.1"
+	"version": "1.0.2",
+	"examples": [
+		{
+			"name": "One-Dimension",
+			"base": "example",
+			"files": [ "one_dimension.cpp" ]
+		}
+	]
 }
