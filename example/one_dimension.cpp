@@ -6,7 +6,7 @@
 #define CLK 12
 #define DAT 13
 
-uint8_t rainbow(index, period)
+uint8_t wave(int index, int period)
 {
     return round(fmax(0.0, sin(1.5 * index / period * M_PI)) * 255);
 }
@@ -22,9 +22,15 @@ int main()
     {
         lights->setPixel(
             k,
-            rainbow(index, LED_COUNT),
-            rainbow((index + LED_COUNT / 3) % LED_COUNT, LED_COUNT),
-            rainbow((index + LED_COUNT * 2 / 3) % LED_COUNT, LED_COUNT));
+            wave(
+                k,
+                LED_COUNT),
+            wave(
+                (k + LED_COUNT / 3) % LED_COUNT,
+                LED_COUNT),
+            wave(
+                (k + LED_COUNT * 2 / 3) % LED_COUNT,
+                LED_COUNT));
     }
 
     lights->flush();
