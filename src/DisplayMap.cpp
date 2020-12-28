@@ -3,23 +3,22 @@
 namespace apa102 {
 
 DisplayMap::DisplayMap(
-    const std::shared_ptr<PointIndexMap> locationMap,
+    PointIndexMap &locationMap,
     const std::shared_ptr<DisplayWriter> writer) : locationMap(locationMap), writer(writer)
 {
 }
 
 DisplayMap::DisplayMap(
-    PointIndexMap *locationMap,
+    PointIndexMap &locationMap,
     DisplayWriter *writer) : locationMap(locationMap), writer(writer)
 {
 }
 
 int DisplayMap::writePixel(const Point2D &location, const ColorRGB &color)
 {
-
-    if (locationMap->count(location))
+    if (locationMap.count(location))
     {
-        return writer->writePixel(locationMap->at(location), color);
+        return writer->writePixel(locationMap[location], color);
     }
 
     return 1;
@@ -27,9 +26,9 @@ int DisplayMap::writePixel(const Point2D &location, const ColorRGB &color)
 
 int DisplayMap::blendPixel(const Point2D &location, const ColorRGBA &color)
 {
-    if (locationMap->count(location))
+    if (locationMap.count(location))
     {
-        auto where = locationMap->at(location);
+        auto where = locationMap[location];
 
         return writer->writePixel(
             where,

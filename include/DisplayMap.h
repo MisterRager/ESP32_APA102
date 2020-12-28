@@ -52,7 +52,7 @@ using PointIndexMap = std::map<Point2D, int, compare_Point2D>;
 class DisplayMap
 {
 private:
-    const std::shared_ptr<PointIndexMap> locationMap;
+    PointIndexMap &locationMap;
     const std::shared_ptr<DisplayWriter> writer;
 
     static uint8_t compositeColor(const uint8_t paint, const uint8_t alpha, const uint8_t onto);
@@ -60,11 +60,11 @@ private:
 
 public:
     DisplayMap(
-        const std::shared_ptr<PointIndexMap> locationMap,
+        PointIndexMap &locationMap,
         const std::shared_ptr<DisplayWriter> writer);
 
     DisplayMap(
-        PointIndexMap * locationMap,
+        PointIndexMap &locationMap,
         DisplayWriter * writer);
 
     int writePixel(const Point2D &location, const ColorRGB &color);
